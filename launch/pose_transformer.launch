@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+	<node type="transformer_node.py" name="pose_transformer" pkg="pose_transformer" output="screen" respawn="true" respawn_delay="10">
+		<param name="desired_freq" value="5"/>
+	</node>
+</launch>
