@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from operator import truediv
 import rospy
 
 from tf.listener import TransformListener
@@ -67,10 +68,11 @@ class PoseTransformer(RComponent):
 
         try:
             self.tf_listener.waitForTransform(msg.source_frame, msg.target_frame,\
-                 rospy.Time(0), rospy.Duration(2.0))
+                 rospy.Time.now(), rospy.Duration(2.0))
             transformed_point = self.tf_listener.transformPose(msg.target_frame, pose)
             response.message = "Pose transformed correctly"
             response.pose = transformed_point.pose
+            response.success = True
 
             self.source_pose_msg = pose
             self.target_pose_msg.header.stamp = rospy.Time.now()
@@ -100,7 +102,10 @@ class PoseTransformer(RComponent):
         request.source_frame = msg.source_frame
         request.target_frame = msg.target_frame
         request.pose.position = msg.position
-        request.pose.orientation = quaternion
+        request.pose.orientation.x  = quaternion[0]
+        request.pose.orientation.y  = quaternion[1]
+        request.pose.orientation.z  = quaternion[2]
+        request.pose.orientation.w  = quaternion[3]
         response_pose = self.transform_pose_service_cb(request)
 
         # Extracts result, position and orientation(rpy) from transform_pose_service 
